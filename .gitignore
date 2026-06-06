@@ -1,0 +1,15 @@
+.env
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+data/raw/*.pdf
+data/synthetic/*.csv
+ml_models/saved_models/
+mlruns/
+*.pkl
+*.joblib
+rag/chroma_db/
+.vscode/
+*.DS_Store
+*.log
