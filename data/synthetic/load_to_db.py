@@ -17,7 +17,7 @@ from sqlalchemy import create_engine, text
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
-from config.settings import db_settings
+from config.setting import db_settings
 
 DATA_DIR = Path(__file__).parent
 
