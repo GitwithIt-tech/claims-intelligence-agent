@@ -1,8 +1,8 @@
 """
 ml_models/predictor.py
 ───────────────────────
-Loads trained models and exposes predict_claim().
-Called by the ML Agent during inference.
+Loads trained models ONCE at module import time.
+Avoids repeated disk reads that cause memory issues on Mac.
 """
 
 import pickle
@@ -30,6 +30,14 @@ def _load(filename: str):
         return pickle.load(f)
 
 
+# ── Load once at import time ──────────────────────────────────────────────────
+print("  Loading ML models into memory...")
+_FRAUD_MODEL      = _load("fraud_detector.pkl")
+_LITIGATION_MODEL = _load("litigation_predictor.pkl")
+_RESOLUTION_MODEL = _load("resolution_forecaster.pkl")
+print("  ✓ All models loaded")
+
+
 def _build_row(claim: dict) -> pd.DataFrame:
     claim_date    = pd.to_datetime(claim.get("claim_date", "2023-01-01"))
     incident_date = pd.to_datetime(claim.get("incident_date", "2023-01-01"))
@@ -44,24 +52,24 @@ def _build_row(claim: dict) -> pd.DataFrame:
         "claim_month":      claim_date.month,
         "claim_quarter":    claim_date.quarter,
         "claim_dow":        claim_date.dayofweek,
-        "claim_type_enc":   TYPE_MAP.get(claim.get("claim_type","vehicle"), 0),
-        "status_enc":       STATUS_MAP.get(claim.get("status","open"), 0),
-        "region_enc":       REGION_MAP.get(claim.get("region","London"), 0),
-        "adjuster_id_enc":  int(str(claim.get("adjuster_id","ADJ0001")).replace("ADJ","")) % 40,
+        "claim_type_enc":   TYPE_MAP.get(claim.get("claim_type", "vehicle"), 0),
+        "status_enc":       STATUS_MAP.get(claim.get("status", "open"), 0),
+        "region_enc":       REGION_MAP.get(claim.get("region", "London"), 0),
+        "adjuster_id_enc":  int(str(claim.get("adjuster_id", "ADJ0001")).replace("ADJ","")) % 40,
     }
     return pd.DataFrame([row])
 
 
 def predict_claim(claim: dict) -> dict:
     """
-    Input:  any claim dict from the DB or API
+    Input:  any claim dict
     Output: fraud score, litigation score, resolution forecast, risk tier
     """
     X = _build_row(claim)
 
-    fraud_prob  = float(_load("fraud_detector.pkl").predict_proba(X)[0][1])
-    lit_prob    = float(_load("litigation_predictor.pkl").predict_proba(X)[0][1])
-    res_days    = float(_load("resolution_forecaster.pkl").predict(X)[0])
+    fraud_prob = float(_FRAUD_MODEL.predict_proba(X)[0][1])
+    lit_prob   = float(_LITIGATION_MODEL.predict_proba(X)[0][1])
+    res_days   = float(_RESOLUTION_MODEL.predict(X)[0])
 
     risk = (
         "high"   if fraud_prob > 0.6 or lit_prob > 0.6 else
@@ -91,6 +99,6 @@ if __name__ == "__main__":
         "resolution_days": 120,
     }
     result = predict_claim(test_claim)
-    print("\nTest claim prediction:")
+    print("\nTest prediction:")
     for k, v in result.items():
         print(f"  {k}: {v}")
