@@ -1,0 +1,40 @@
+services:
+  - type: web
+    name: insuredai-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt && python data/synthetic/generate_data.py && python rag/ingest.py && python ml_models/train_models.py
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: POSTGRES_HOST
+        fromDatabase:
+          name: insuredai-db
+          property: host
+      - key: POSTGRES_PORT
+        fromDatabase:
+          name: insuredai-db
+          property: port
+      - key: POSTGRES_DB
+        fromDatabase:
+          name: insuredai-db
+          property: database
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: insuredai-db
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: insuredai-db
+          property: password
+      - key: CHROMA_PERSIST_DIR
+        value: ./rag/chroma_db
+      - key: MLFLOW_TRACKING_URI
+        value: ./mlruns
+      - key: API_SECRET_KEY
+        generateValue: true
+
+databases:
+  - name: insuredai-db
+    databaseName: claims_db
+    user: claims_user
