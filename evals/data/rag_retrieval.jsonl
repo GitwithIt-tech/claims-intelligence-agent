@@ -1,0 +1,19 @@
+// RAG RETRIEVAL TEST SET
+// Maps each policy question to the document + page that actually answers it.
+// Used for recall@k and MRR, and to justify the 0.55 confidence threshold.
+//
+// YOU must fill 'relevant' with the real {doc, page} from your 7 PDFs.
+// Open each PDF, find the page that answers the question, record it.
+// 20-30 entries is plenty. 'is_policy' = true means the answer SHOULD come
+// from documents; false means it's a general definition where AI-knowledge
+// fallback is the correct behaviour (these test that the threshold fires).
+{"id": "ret_01", "question": "What is the excess on the AXA motor policy?", "is_policy": true, "relevant": [{"doc": "AXA", "page": 0}]}
+{"id": "ret_02", "question": "What does Direct Line cover for flood damage?", "is_policy": true, "relevant": [{"doc": "Direct Line", "page": 0}]}
+{"id": "ret_03", "question": "What is the claims notification window under Admiral?", "is_policy": true, "relevant": [{"doc": "Admiral", "page": 0}]}
+{"id": "ret_04", "question": "What are the exclusions for water damage in the AXA policy?", "is_policy": true, "relevant": [{"doc": "AXA", "page": 0}]}
+{"id": "ret_05", "question": "How does Direct Line handle third-party liability?", "is_policy": true, "relevant": [{"doc": "Direct Line", "page": 0}]}
+{"id": "ret_06", "question": "What is the no-claims discount policy in Admiral?", "is_policy": true, "relevant": [{"doc": "Admiral", "page": 0}]}
+{"id": "ret_07", "question": "What is subrogation in insurance?", "is_policy": false, "relevant": []}
+{"id": "ret_08", "question": "Define indemnity", "is_policy": false, "relevant": []}
+{"id": "ret_09", "question": "What does 'betterment' mean in claims?", "is_policy": false, "relevant": []}
+{"id": "ret_10", "question": "Explain proximate cause", "is_policy": false, "relevant": []}

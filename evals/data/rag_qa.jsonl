@@ -1,0 +1,12 @@
+// RAG FAITHFULNESS / ANSWER-RELEVANCY SET
+// Ground-truth answers let us measure whether the generated answer is
+// (a) faithful to the retrieved context (no hallucination) and
+// (b) relevant to the question.
+//
+// 'ground_truth' is a concise correct answer YOU write from the source.
+// 15-20 entries is enough for a meaningful signal.
+{"id": "qa_01", "question": "What is subrogation in insurance?", "ground_truth": "Subrogation is the insurer's legal right to pursue a third party responsible for a loss in order to recover money it has paid to its policyholder."}
+{"id": "qa_02", "question": "What is an insurance excess?", "ground_truth": "The excess is the fixed amount a policyholder must pay towards a claim before the insurer pays the remainder."}
+{"id": "qa_03", "question": "What does indemnity mean?", "ground_truth": "Indemnity means restoring the insured to the financial position they were in before the loss, without profit."}
+{"id": "qa_04", "question": "What is the claims notification window under the Admiral policy?", "ground_truth": "FILL FROM ADMIRAL PDF — e.g. the policyholder must notify within X days of becoming aware of the incident."}
+{"id": "qa_05", "question": "What flood damage is covered under the Direct Line policy?", "ground_truth": "FILL FROM DIRECT LINE PDF."}

@@ -1,0 +1,23 @@
+{"query": "Show top 5 adjusters by fraud-flagged claims", "expected": "sql"}
+{"query": "How many claims are currently open?", "expected": "sql"}
+{"query": "What is the average claim value by region?", "expected": "sql"}
+{"query": "Which claim type has the longest average resolution time?", "expected": "sql"}
+{"query": "List all litigated claims in Birmingham over 50000", "expected": "sql"}
+{"query": "Count fraud-flagged claims per month in 2024", "expected": "sql"}
+{"query": "What is subrogation in insurance?", "expected": "rag"}
+{"query": "Explain the excess clause in a motor policy", "expected": "rag"}
+{"query": "What does the AXA policy say about flood damage?", "expected": "rag"}
+{"query": "Define indemnity in plain English", "expected": "rag"}
+{"query": "What is the claims notification window under the Admiral policy?", "expected": "rag"}
+{"query": "What are the exclusions for water damage?", "expected": "rag"}
+{"query": "Score claim CLM0000100", "expected": "ml"}
+{"query": "What is the fraud risk for CLM0004240?", "expected": "ml"}
+{"query": "Predict litigation likelihood for claim CLM0001234", "expected": "ml"}
+{"query": "How long will CLM0005000 take to resolve?", "expected": "ml"}
+{"query": "Give me the risk profile for CLM0000042", "expected": "ml"}
+{"query": "Score claim CLM0000001 and explain what subrogation means", "expected": "hybrid"}
+{"query": "Analyse CLM0001234 and tell me the policy rules for that claim type", "expected": "hybrid"}
+{"query": "How many fraud claims in Leeds, and what does our policy say about fraud investigation?", "expected": "hybrid"}
+{"query": "Compare the fraud score of CLM0000100 against the regional average", "expected": "hybrid"}
+{"query": "thanks", "expected": "rag"}
+{"query": "what can you do?", "expected": "rag"}

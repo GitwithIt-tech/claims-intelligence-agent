@@ -1,0 +1,12 @@
+// SQL GOLDEN SET — calibrated against claims_db on 2026-06-13
+// Scored on EXECUTION accuracy (result set), not SQL string match.
+{"id": "sql_01", "question": "How many claims are there in total?", "check": {"type": "scalar", "expected": 10000}}
+{"id": "sql_02", "question": "How many claims are currently open?", "check": {"type": "scalar", "expected": 2451}}
+{"id": "sql_03", "question": "How many claims are fraud flagged?", "check": {"type": "scalar", "expected": 1879}}
+{"id": "sql_04", "question": "What is the average claim amount across all claims?", "check": {"type": "scalar", "expected": 27434, "tolerance": 50}}
+{"id": "sql_05", "question": "Show the top 5 adjusters by number of fraud-flagged claims", "check": {"type": "row_count", "expected": 5}}
+{"id": "sql_06", "question": "List the claim types and their counts", "check": {"type": "row_count", "expected": 5}}
+{"id": "sql_07", "question": "Which region has the highest average fraud score?", "check": {"type": "scalar", "expected": "London"}}
+{"id": "sql_08", "question": "How many claims have the status litigated?", "check": {"type": "scalar", "expected": 507}}
+{"id": "sql_09", "question": "What is the average resolution time in days for health claims?", "check": {"type": "scalar", "expected": 248, "tolerance": 2}}
+{"id": "sql_10", "question": "How many distinct regions are there?", "check": {"type": "scalar", "expected": 10}}

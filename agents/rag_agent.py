@@ -27,11 +27,11 @@ llm = ChatGroq(
 
 RAG_PROMPT = ChatPromptTemplate.from_messages([
     ("system", """You are an expert insurance claims analyst.
+Answer using ONLY the policy documentation below. Always cite the source document and page number.
 
-Answer using ONLY the policy documentation below.
-Always cite the source document and page number.
-If the documentation does not contain enough information to answer, reply with exactly:
-NOT_IN_DOCUMENTS
+Answer the question as fully as the documentation allows, even if it covers the topic only partially. If the documents explain a concept but omit a specific detail (e.g. an exact figure), give what IS stated and note plainly which part is not specified.
+
+Reply with exactly NOT_IN_DOCUMENTS only when the documentation is entirely unrelated to the question and contains nothing useful about the topic.
 
 POLICY DOCUMENTATION:
 {context}
@@ -72,9 +72,12 @@ def _is_definition_question(question: str) -> bool:
 
 
 def _rag_confidence(chunks: list) -> float:
+    # Top-chunk score, not average: you answer from the single best chunk,
+    # so averaging in weaker neighbours dilutes a real signal. Calibrated
+    # against all-MiniLM-L6-v2's score distribution on this corpus (0.33-0.60).
     if not chunks:
         return 0.0
-    return sum(c["score"] for c in chunks) / len(chunks)
+    return max(c["score"] for c in chunks)
 
 
 def _groq_knowledge_answer(question: str) -> dict:
@@ -113,7 +116,7 @@ def run_rag_agent(question: str) -> dict:
             chunks     = retrieve(question, top_k=3)
             confidence = _rag_confidence(chunks)
 
-            if confidence > 0.55:
+            if confidence > 0.47:
                 context  = retrieve_with_context(question, top_k=3)
                 chain    = RAG_PROMPT | llm
                 response = chain.invoke({"context": context, "question": question})
@@ -127,6 +130,8 @@ def run_rag_agent(question: str) -> dict:
                         "answer":      answer,
                         "sources":     sources,
                         "source_type": "policy_documents",
+                        "confidence":  confidence,
+                        "contexts":    [c["text"] for c in chunks],
                     }
         except Exception:
             pass
@@ -144,17 +149,19 @@ def run_rag_agent(question: str) -> dict:
         response = chain.invoke({"context": context, "question": question})
         answer   = response.content.strip()
 
-        if "NOT_IN_DOCUMENTS" in answer or confidence < 0.35:
+        if "NOT_IN_DOCUMENTS" in answer or confidence < 0.40:
             return _groq_knowledge_answer(question)
 
         sources = list({f"{c['source']} (p.{c['page']})" for c in chunks})
         return {
-            "success":     True,
-            "agent":       "rag",
-            "answer":      answer,
-            "sources":     sources,
-            "source_type": "policy_documents",
-        }
+                        "success":     True,
+                        "agent":       "rag",
+                        "answer":      answer,
+                        "sources":     sources,
+                        "source_type": "policy_documents",
+                        "confidence":  confidence,
+                        "contexts":    [c["text"] for c in chunks],
+                    }
 
     except Exception:
         return _groq_knowledge_answer(question)
